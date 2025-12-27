@@ -24,6 +24,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web:4.0.1")
     implementation("org.springframework.boot:spring-boot-starter-validation:4.0.1")
     implementation("org.springframework.boot:spring-boot-starter-jooq:4.0.1")
+    implementation("org.postgresql:postgresql:42.7.2")
     jooqCodegen("org.postgresql:postgresql:42.7.2")
     compileOnly("org.projectlombok:lombok:1.18.42")
     annotationProcessor("org.projectlombok:lombok:1.18.42")
@@ -35,9 +36,9 @@ jooq {
     configuration {
         jdbc {
             driver = "org.postgresql.Driver"
-            url = "jdbc:postgresql://localhost:5432/postgres"
-            user = "mustufain"
-            password = "password"
+            url = project.findProperty("DB_URL").toString()
+            user = project.findProperty("DB_USER").toString()
+            password =project.findProperty("DB_PASSWORD").toString()
         }
         generator {
             name = "org.jooq.codegen.DefaultGenerator"
@@ -58,6 +59,15 @@ jooq {
         }
     }
 }
+
+sourceSets {
+    main {
+        java {
+            srcDirs("build/generated-sources/jooq")
+        }
+    }
+}
+
 tasks.withType<Test> {
     useJUnitPlatform()
 }
