@@ -30,7 +30,7 @@ jobs:
       - name: Build with Gradle
         run: |
           ./gradlew clean
-            run: ./gradlew assemble -PDB_URL=jdbc:postgresql://localhost:5432/notes -PDB_USER=user -PDB_PASSWORD=password
+          ./gradlew assemble -PDB_URL=jdbc:postgresql://localhost:5432/notes -PDB_USER=user -PDB_PASSWORD=password
   test:
     needs: build
     runs-on: ubuntu-latest
