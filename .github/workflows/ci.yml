@@ -31,14 +31,22 @@ jobs:
       - name: Initialize Database
         run: |
           sudo apt-get update && sudo apt-get install -y postgresql-client
-          PGPASSWORD=password psql -h localhost -U user -d notes -f src/main/resources/sql/user.sql
-          PGPASSWORD=password psql -h localhost -U user -d notes -f src/main/resources/sql/note.sql
+          for file in src/main/resources/sql/*.sql; do
+            echo "Executing $file..."
+            PGPASSWORD=password psql -h localhost -U user -d notes -f "$file"
+          done
 
       - name: Build and Generate Jooq
         run: |
           ./gradlew clean
           ./gradlew jooqCodegen -PDB_URL=jdbc:postgresql://localhost:5432/notes -PDB_USER=user -PDB_PASSWORD=password 
           ./gradlew assemble
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jooq-classes
+          path: build/generated-sources/jooq
+
   test:
     needs: build
     runs-on: ubuntu-latest
@@ -46,6 +54,11 @@ jobs:
       contents: read
 
     steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: jooq-classes
+          path: build/generated-sources/jooq
+
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
       - name: Run tests
