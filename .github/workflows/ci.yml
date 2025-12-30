@@ -27,7 +27,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - name: Build with Gradle
+
+      - name: Initialize Database
+        run: |
+          sudo apt-get update && sudo apt-get install -y postgresql-client
+          PGPASSWORD=password psql -h localhost -U user -d notes -f src/main/resources/sql/user.sql
+          PGPASSWORD=password psql -h localhost -U user -d notes -f src/main/resources/sql/note.sql
+
+      - name: Build and Generate Jooq
         run: |
           ./gradlew clean
           ./gradlew jooqCodegen -PDB_URL=jdbc:postgresql://localhost:5432/notes -PDB_USER=user -PDB_PASSWORD=password 
