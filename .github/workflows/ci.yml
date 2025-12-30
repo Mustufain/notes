@@ -1,0 +1,30 @@
+name: Notes App CI
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: ./.github/actions/setup
+      - name: Build with Gradle
+        run: |
+          ./gradlew clean
+          ./gradlew jooqCodegen
+          ./gradlew assemble
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: ./.github/actions/setup
+      - name: Run tests
+        run: ./gradlew test

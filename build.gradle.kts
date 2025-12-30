@@ -23,6 +23,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter:4.0.1")
     implementation("org.springframework.boot:spring-boot-starter-web:4.0.1")
     implementation("org.springframework.boot:spring-boot-starter-validation:4.0.1")
+    implementation("org.springframework.boot:spring-boot-starter-actuator:4.0.1")
     implementation("org.springframework.boot:spring-boot-starter-jooq:4.0.1")
     implementation("org.postgresql:postgresql:42.7.2")
     jooqCodegen("org.postgresql:postgresql:42.7.2")
