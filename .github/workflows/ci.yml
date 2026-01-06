@@ -51,3 +51,12 @@ jobs:
           ./gradlew clean
           ./gradlew jooqCodegen -PDB_URL=jdbc:postgresql://localhost:5432/notes -PDB_USER=user -PDB_PASSWORD=password 
           ./gradlew test
+
+  deploy:
+      needs: test
+      runs-on: ubuntu-latest
+      environment: production
+      steps:
+        - uses: actions/checkout@v4
+        - name: Deploy
+          run: echo HELLO
