@@ -42,25 +42,38 @@ jobs:
           ./gradlew jooqCodegen -PDB_URL=jdbc:postgresql://localhost:5432/notes -PDB_USER=user -PDB_PASSWORD=password 
           ./gradlew assemble
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: build files
-          path: build
-          retention-days: 1
-          overwrite: true
-
   test:
     needs: build
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: notes
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     permissions:
       contents: read
 
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
-        with:
-          name: build files
-          path: build
       - uses: ./.github/actions/setup
+      - name: Initialize Database
+        run: |
+          sudo apt-get update && sudo apt-get install -y postgresql-client
+          for file in src/main/resources/sql/*.sql; do
+            echo "Executing $file..."
+            PGPASSWORD=password psql -h localhost -U user -d notes -f "$file"
+          done
       - name: Run tests
-        run: ./gradlew test
+        run: |
+          ./gradlew clean
+          ./gradlew jooqCodegen -PDB_URL=jdbc:postgresql://localhost:5432/notes -PDB_USER=user -PDB_PASSWORD=password 
+          ./gradlew test
