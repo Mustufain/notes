@@ -8,7 +8,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     services:
-      postgres:
+      postgres: &postgres_service
         image: postgres:15
         env:
           POSTGRES_DB: notes
@@ -27,15 +27,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-
-      - name: Initialize Database
-        run: |
-          sudo apt-get update && sudo apt-get install -y postgresql-client
-          for file in src/main/resources/sql/*.sql; do
-            echo "Executing $file..."
-            PGPASSWORD=password psql -h localhost -U user -d notes -f "$file"
-          done
-
+      - uses: ./.github/actions/init-db
       - name: Build and Generate Jooq
         run: |
           ./gradlew clean
@@ -46,32 +38,14 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_DB: notes
-          POSTGRES_USER: user
-          POSTGRES_PASSWORD: password
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+      postgres: *postgres_service
     permissions:
       contents: read
 
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - name: Initialize Database
-        run: |
-          sudo apt-get update && sudo apt-get install -y postgresql-client
-          for file in src/main/resources/sql/*.sql; do
-            echo "Executing $file..."
-            PGPASSWORD=password psql -h localhost -U user -d notes -f "$file"
-          done
+      - uses: ./.github/actions/init-db
       - name: Run tests
         run: |
           ./gradlew clean

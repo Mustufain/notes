@@ -1,0 +1,13 @@
+name: 'Initialize database'
+description: 'Setup postgres database and run migration sql scripts'
+runs:
+  using: "composite"
+  steps:
+    - name: Initialize Database
+      run: |
+        sudo apt-get update && sudo apt-get install -y postgresql-client
+        for file in src/main/resources/sql/*.sql; do
+          echo "Executing $file..."
+          PGPASSWORD=password psql -h localhost -U user -d notes -f "$file"
+        done
+      shell: bash
