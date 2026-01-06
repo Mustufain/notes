@@ -60,6 +60,13 @@ jobs:
         - name: Checkout
           uses: actions/checkout@v4
 
+        - uses: ./.github/actions/setup
+        - uses: ./.github/actions/init-db
+        - name: Generate Jooq
+          run: |
+            ./gradlew clean
+            ./gradlew jooqCodegen -PDB_URL=jdbc:postgresql://localhost:5432/notes -PDB_USER=user -PDB_PASSWORD=password 
+
         - name: Configure AWS credentials
           uses: aws-actions/configure-aws-credentials@v1
           with:
