@@ -55,11 +55,14 @@ jobs:
   deploy:
       needs: test
       runs-on: ubuntu-latest
+      services:
+        postgres: *postgres_service
+      permissions:
+        contents: read
       environment: production
       steps:
         - name: Checkout
           uses: actions/checkout@v4
-
         - uses: ./.github/actions/setup
         - uses: ./.github/actions/init-db
         - name: Generate Jooq
