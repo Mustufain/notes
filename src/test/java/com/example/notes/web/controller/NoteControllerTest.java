@@ -7,11 +7,14 @@ import com.example.notes.web.dto.NoteResponseDto;
 import com.example.notes.web.exception.GlobalExceptionHandler;
 import com.example.notes.web.mapper.NoteMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -33,11 +36,32 @@ public class NoteControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @MockBean
+    @Autowired
     private NoteService service;
 
-    @MockBean
+    @Autowired
     private NoteMapper mapper;
+
+    @TestConfiguration
+    static class TestConfig {
+
+        @Bean
+        @Primary
+        NoteService noteService() {
+            return mock(NoteService.class);
+        }
+
+        @Bean
+        NoteMapper noteMapper() {
+            return mock(NoteMapper.class);
+        }
+    }
+
+    @BeforeEach
+    void beforeEach() {
+        Mockito.reset(service);
+        Mockito.reset(mapper);
+    }
 
     @Test
     void shouldReturnNotes() throws Exception {
@@ -54,7 +78,7 @@ public class NoteControllerTest {
                 .andExpect(jsonPath("$[0].title").value("Title"))
                 .andExpect(jsonPath("$[0].content").value("Content"));
 
-        verify(service, Mockito.times(1)).getNotes(userId);
+        verify(service, times(1)).getNotes(userId);
     }
 
     @Test
@@ -77,7 +101,7 @@ public class NoteControllerTest {
                 .andExpect(jsonPath("$.title").value("Title"))
                 .andExpect(jsonPath("$.content").value("Content"));
 
-        verify(service, Mockito.times(1)).createNote(eq(userId), any(Note.class));
+        verify(service, times(1)).createNote(eq(userId), any(Note.class));
     }
 
     @Test
@@ -101,7 +125,7 @@ public class NoteControllerTest {
                 .andExpect(jsonPath("$.title").value("Updated Title"))
                 .andExpect(jsonPath("$.content").value("Updated Content"));
 
-        verify(service, Mockito.times(1)).updateNote(eq(userId), eq(noteId), any(Note.class));
+        verify(service, times(1)).updateNote(eq(userId), eq(noteId), any(Note.class));
     }
 
     @Test
@@ -114,7 +138,7 @@ public class NoteControllerTest {
         mockMvc.perform(delete("/v1/users/{userId}/notes/{noteId}", userId, noteId))
                 .andExpect(status().isOk());
 
-        verify(service, Mockito.times(1)).deleteNote(userId, noteId);
+        verify(service, times(1)).deleteNote(userId, noteId);
     }
 
     @Test
