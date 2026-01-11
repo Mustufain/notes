@@ -21,7 +21,7 @@ public class NoteRepositoryImpl implements NoteRepository {
     private final DSLContext dslContext;
 
     @Override
-    public Note createNote(@NonNull String userId, @NonNull Note note) {
+    public Note createNote(@NonNull Long userId, @NonNull Note note) {
         NoteRecord record = dslContext.insertInto(NOTE)
                 .set(NOTE.TITLE, note.getTitle())
                 .set(NOTE.CONTENT, note.getContent())
@@ -33,7 +33,7 @@ public class NoteRepositoryImpl implements NoteRepository {
     }
 
     @Override
-    public Note updateNote(@NonNull String userId, @NonNull Long noteId, @NonNull Note note) {
+    public Note updateNote(@NonNull Long userId, @NonNull Long noteId, @NonNull Note note) {
         NoteRecord record = dslContext.update(NOTE)
                 .set(NOTE.TITLE, note.getTitle())
                 .set(NOTE.CONTENT, note.getContent())
@@ -48,7 +48,7 @@ public class NoteRepositoryImpl implements NoteRepository {
     }
 
     @Override
-    public List<Note> getNotes(@NonNull String userId) {
+    public List<Note> getNotes(@NonNull Long userId) {
         return dslContext.selectFrom(NOTE)
                 .where(NOTE.USER_ID.eq(
                         dslContext.select(USER.ID).from(USER).where(USER.ID.eq(userId))
@@ -58,7 +58,7 @@ public class NoteRepositoryImpl implements NoteRepository {
     }
 
     @Override
-    public void deleteNote(@NonNull String userId, @NonNull Long noteId) {
+    public void deleteNote(@NonNull Long userId, @NonNull Long noteId) {
         dslContext.deleteFrom(NOTE)
                 .where(NOTE.ID.eq(noteId))
                 .and(NOTE.USER_ID.eq(

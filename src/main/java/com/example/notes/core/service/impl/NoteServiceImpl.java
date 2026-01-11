@@ -16,25 +16,23 @@ import java.util.List;
 public class NoteServiceImpl implements NoteService {
     private final NoteRepository noteRepository;
 
-    //TODO what validations we need here ?
-
     @Override
-    public Note createNote(@NonNull String userId, @NonNull Note note) {
+    public Note createNote(@NonNull Long userId, @NonNull Note note) {
         return noteRepository.createNote(userId, note);
     }
 
     @Override
-    public Note updateNote(@NonNull String userId, @NonNull Long noteId, @NonNull Note note) {
+    public Note updateNote(@NonNull Long userId, @NonNull Long noteId, @NonNull Note note) {
         return noteRepository.updateNote(userId, noteId, note);
     }
 
     @Override
-    public List<Note> getNotes(@NonNull String userId) {
+    public List<Note> getNotes(@NonNull Long userId) {
         return noteRepository.getNotes(userId);
     }
 
     @Override
-    public void deleteNote(@NonNull String userId, @NonNull Long noteId) {
+    public void deleteNote(@NonNull Long userId, @NonNull Long noteId) {
         noteRepository.deleteNote(userId, noteId);
     }
 }

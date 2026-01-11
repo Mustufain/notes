@@ -1,6 +1,6 @@
 plugins {
     java
-    id("org.springframework.boot") version "4.0.1"
+    id("org.springframework.boot") version "3.3.2"
     id("io.spring.dependency-management") version "1.1.7"
     id("org.jooq.jooq-codegen-gradle") version "3.19.29"
 }
@@ -20,16 +20,16 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter:4.0.1")
-    implementation("org.springframework.boot:spring-boot-starter-web:4.0.1")
-    implementation("org.springframework.boot:spring-boot-starter-validation:4.0.1")
-    implementation("org.springframework.boot:spring-boot-starter-actuator:4.0.1")
-    implementation("org.springframework.boot:spring-boot-starter-jooq:4.0.1")
-    implementation("org.postgresql:postgresql:42.7.2")
-    jooqCodegen("org.postgresql:postgresql:42.7.2")
-    compileOnly("org.projectlombok:lombok:1.18.42")
-    annotationProcessor("org.projectlombok:lombok:1.18.42")
-    testImplementation("org.springframework.boot:spring-boot-starter-test:4.0.1")
+    implementation("org.springframework.boot:spring-boot-starter")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-jooq")
+    implementation("org.postgresql:postgresql")
+    jooqCodegen("org.postgresql:postgresql")
+    compileOnly("org.projectlombok:lombok")
+    annotationProcessor("org.projectlombok:lombok")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
