@@ -21,7 +21,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Boolean doesUserExists(@NonNull String email) {
-       return dslContext.selectFrom(USER).where(USER.EMAIL.eq(email)).fetchOneInto(Boolean.class);
+        return dslContext.fetchExists(dslContext.selectFrom(USER).where(USER.EMAIL.eq(email)));
     }
 
     @Override
